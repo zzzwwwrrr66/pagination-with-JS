@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Board Pagenation</title>
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <style>
+    #pages  {
+      display: flex;
+    }
+    #pages li {
+      display: flex;
+      margin: 0 10px;
+      
+      border: 4px solid #000;
+      box-sizing: border-box;
+    }
+    #pages li a {
+      display: block;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+    }
+    .active {
+      color: red;
+    }
+    li {
+      list-style: none;
+    }
+  </style>
+</head>
+<body>
+  <ul id="item-list">
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+  </ul>
+  <div class="pagination-wrap">
+    <ul id="pages" class="pagination"></ul>
+  </div>
+  <script>
+    const ALL_ITEMS = 50;
+
+    const totalData = 100;    // 총 데이터 수
+    // var dataPerPage = 20;    // 한 페이지에 나타낼 데이터 수
+    // var pageCount = 5;        // 한 화면에 나타낼 페이지 수
+
+    function paging(totalData, currentPage) {
+      const dataPerPage = 5;
+      const pageCount = 5;
+      const totalPage = Math.ceil( totalData / dataPerPage );  // 총페이지수
+      const pageGroup = Math.ceil( currentPage / pageCount); // Math.ceil 53/5 == 11 페이지그룹
+      
+      let last = pageGroup * pageCount; //화면의 마지막번호
+      if( last > totalPage) last = totalPage;
+
+      let first = last - ( pageCount - 1); // 화면의 첫번째 번호 
+      const next = last + 1;
+      const prev = first - 1;
+
+      if( totalPage < 1) {
+        first = last;
+      }
+
+      const pages = $('#pages');
+      pages.empty();
+      // prev
+      if(first > 5) {
+        pages.append(`
+        <li class="pagination-item">
+          <a id="prev" onclick="getTarget(${prev})">prev</a>
+        </li>
+        `);
+      }
+
+      
+      for(let i = first; i <= last; i++) {
+        // current number
+        if(currentPage == i ) {
+          pages.append(`
+          <li class="pagination-item">
+            <a class="active" onclick="getTarget(${i})">${i}</a>
+          </li>
+          `);
+        } else if(i > 0) {
+          pages.append(`
+          <li class="pagination-item">
+            <a class="" onclick="getTarget(${i})">${i}</a>
+          </li>
+          `);
+        }
+      }
+
+      if(next > 5 && next < totalPage) {
+        pages.append(`
+          <li class="pagination-item">
+            <a id="next" class="" onclick="getTarget(${next})">next</a>
+          </li>
+          `);
+      }
+      if(typeof currentPage == 'number' && currentPage == 1 ) {
+        console.log('first index',(currentPage * pageCount) - pageCount, 'last index', currentPage * pageCount);
+      }
+      if(typeof currentPage == 'number' && currentPage != 1 ) {
+        console.log('first index',(currentPage * pageCount) - pageCount, 'last index', currentPage * pageCount);
+      }
+    }
+
+    function getTarget(what){
+      if(event.currentTarget.classList.contains('active') ) return
+      console.log(what)
+
+      paging(totalData, what);
+    }
+
+
+    paging(totalData, 1) 
+  </script>
+</body>
+</html>
